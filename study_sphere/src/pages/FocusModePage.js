@@ -121,6 +121,40 @@ function FocusModePage() {
     if (remaining === 0 && running) {
       setRunning(false);
       setShowBuddyMsg(true);
+      // When a full focus cycle completes, store progress to localStorage
+      if (phase === "break") {
+        // Save completion: track by date ("studysphere_focus_sessions"), array of ISO dates
+        const todayISO = new Date().toISOString().slice(0, 10);
+        let arr = [];
+        try {
+          arr = JSON.parse(localStorage.getItem("studysphere_focus_sessions")) || [];
+        } catch (e) {}
+        // Only add today's date if not already present (one complete session per day)
+        if (!arr.includes(todayISO)) {
+          arr.push(todayISO);
+          localStorage.setItem("studysphere_focus_sessions", JSON.stringify(arr));
+        }
+        // Update streak cached as well
+        // (also do this for UI "snappiness", but ProgressPage also computes it live)
+        let streak = 1;
+        // reverse sort dates (latest first)
+        const sortedDates = [...arr].sort().reverse();
+        let curr = todayISO;
+        for (let i = 0; i < sortedDates.length; i++) {
+          if (sortedDates[i] === curr) {
+            streak++;
+            curr = new Date(curr);
+            curr.setDate(curr.getDate() - 1);
+            curr = curr.toISOString().slice(0, 10);
+          } else {
+            break;
+          }
+        }
+        localStorage.setItem(
+          "studysphere_streak",
+          JSON.stringify({ streak, last: todayISO })
+        );
+      }
       // Automatically transition after 2s, but only: study->break, break->done
       setTimeout(() => {
         if (phase === "study") {
