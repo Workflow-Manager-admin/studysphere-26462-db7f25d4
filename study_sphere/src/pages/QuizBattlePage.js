@@ -59,6 +59,17 @@ function QuizBattlePage() {
     setScore(userScore);
     setBuddyScore(simulateBuddyScore(userScore));
     setSubmitted(true);
+
+    // Store quiz attempt in localStorage for Progress tracking
+    // Format: { correct: int, total: int }
+    try {
+      const prev = JSON.parse(localStorage.getItem("studysphere_quiz_record")) || { correct: 0, total: 0 };
+      const updated = {
+        correct: prev.correct + userScore,
+        total: prev.total + QUESTIONS.length,
+      };
+      localStorage.setItem("studysphere_quiz_record", JSON.stringify(updated));
+    } catch (e) {/* ignore */}
   };
 
   // Try Again resets quiz state
