@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage';
 import SharedTasksPage from './pages/SharedTasksPage';
 import QuizBattlePage from './pages/QuizBattlePage';
 import StudyChatPage from './pages/StudyChatPage';
+import FocusModePage from './pages/FocusModePage';
 import { UserProvider } from './UserContext';
 
 /**
@@ -36,6 +37,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/join" replace />} />
                 <Route path="/join" element={<JoinPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/focus" element={<FocusModePage />} />
                 <Route path="/tasks" element={<SharedTasksPage />} />
                 <Route path="/quiz" element={<QuizBattlePage />} />
                 <Route path="/chat" element={<StudyChatPage />} />
