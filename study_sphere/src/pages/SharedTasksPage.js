@@ -72,6 +72,7 @@ function SharedTasksPage() {
           Add, check off, and manage your group's study tasks.<br />
           <span style={{ fontSize: 18 }}>📝</span>
         </p>
+        <BackToDashboardButton style={{ margin: "10px 0 18px 0", alignSelf: "start" }} />
         <form onSubmit={handleAddTask} className="task-form" autoComplete="off">
           <input
             className="task-input"

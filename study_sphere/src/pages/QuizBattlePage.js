@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import BackToDashboardButton from "./BackToDashboardButton";
 
 // Sample MCQs (could be randomized, simple for prototype/demo)
 const QUESTIONS = [
@@ -115,6 +116,7 @@ function QuizBattlePage() {
         >
           Answer all 3 questions and see who wins, you or your Study Buddy!
         </div>
+        <BackToDashboardButton style={{ margin: "8px 0 21px 0", alignSelf: "start" }} />
         <form onSubmit={handleSubmit} autoComplete="off">
           <ol style={{ paddingLeft: 0, margin: "0 0 8px 0" }}>
             {QUESTIONS.map((q, qIdx) => (
