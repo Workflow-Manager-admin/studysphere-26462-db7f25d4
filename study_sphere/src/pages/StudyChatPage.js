@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useUser } from "../UserContext";
+import BackToDashboardButton from "./BackToDashboardButton";
 
 /**
  * StudyChatPage: Provides a playful, responsive chat between user and a simulated Study Buddy.
@@ -131,6 +132,7 @@ function StudyChatPage() {
         >
           <span role="img" aria-label="Chat">💬</span> Study Chat
         </div>
+        <BackToDashboardButton style={{ margin: "10px 0 18px 19px", alignSelf: "start" }} />
         {/* Messages Display */}
         <div
           className="chat-messages"
