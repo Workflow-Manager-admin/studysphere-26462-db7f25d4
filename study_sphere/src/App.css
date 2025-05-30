@@ -1,34 +1,42 @@
 :root {
+  --primary: #4F8A8B;
+  --secondary: #FBD46D;
+  --accent: #F76B8A;
   --kavia-orange: #E87A41;
   --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
-  --accent: #F76B8A;
-  --kavia-bg-light: #f8fafb;
+  --text-color: #222;
+  --text-secondary: #767676;
+  --border-color: #e5e6ef;
+  --kavia-bg-light: #F8FAFB;
 }
 
-/* General app container styles */
 body, html, #root {
   margin: 0;
   padding: 0;
-  min-height: 100%;
-  background: var(--kavia-bg-light, #f8fafb);
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  color: #212226;
+  min-height: 100%;
+  background: var(--kavia-bg-light);
+  color: var(--text-color);
 }
 
 .app {
   min-height: 100vh;
-  background: var(--kavia-bg-light, #f8fafb);
-  font-family: inherit;
+  background: var(--kavia-bg-light);
 }
 
-/* Navbar */
+.container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* --- NAVBAR --- */
 .navbar {
-  height: 64px;
-  background: var(--kavia-dark, #1A1A1A);
-  box-shadow: 0 3px 12px 0 rgba(27,27,36,0.07);
+  height: 62px;
+  background: var(--kavia-dark);
+  box-shadow: 0 3px 18px 0 rgba(27,27,36,0.09);
   color: #fff;
   position: fixed;
   top: 0;
@@ -39,152 +47,391 @@ body, html, #root {
 }
 
 .navbar .container {
-  width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
   display: flex;
   align-items: center;
 }
 
 .logo {
-  font-weight: 700;
-  font-size: 1.35rem;
-  letter-spacing: -1.5px;
+  font-weight: 800;
+  font-size: 1.38rem;
   display: flex;
   align-items: center;
+  letter-spacing: -1px;
+  gap: 8px;
 }
-
 .logo-symbol {
-  font-size: 1.5em;
-  margin-right: 6px;
+  font-size: 1.45em;
+  margin-right: 4px;
+  /* decorative fun logo—can be replaced by real logo */
+  color: var(--secondary);
+  filter: drop-shadow(0 1px 0 #fff5);
 }
 
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 18px;
+/* --- FUN, PLAYFUL BUTTONS --- */
+.btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.65em 1.7em;
+  font-weight: 700;
+  font-size: 1.06em;
+  box-shadow: 0 2px 9px rgba(70,70,60,0.08);
+  cursor: pointer;
+  outline: none;
+  transition: background 0.18s, color 0.13s, transform 0.11s;
+  text-align: center;
+  display: inline-block;
+  position: relative;
+}
+.btn:active, .btn:focus {
+  background: var(--accent);
+  color: #fff;
+  transform: scale(0.97);
+}
+.btn[disabled],
+.btn[tabindex="-1"] {
+  background: #dfdfdf !important;
+  color: #aaa !important;
+  cursor: not-allowed;
+  opacity: 0.65;
+  filter: grayscale(0.17);
+}
+.btn-large {
+  font-size: 1.22em;
+  padding: 0.7em 1.9em;
+  border-radius: 111px;
+  letter-spacing: -0.02em;
 }
 
-/* Shared Tasks page styles */
+.dashboard-btn {
+  /* These are styled inline for now in DashboardPage.js */
+}
+
+/* Headings and text */
+.title {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 0.4em;
+  letter-spacing: -1.5px;
+}
+.subtitle {
+  font-size: 1.38rem;
+  color: var(--kavia-dark);
+  opacity: 0.7;
+  margin-bottom: 0.5em;
+}
+.description {
+  color: var(--text-secondary);
+  margin-bottom: 1.4em;
+  font-size: 1.11rem;
+}
+
+/* --- GENERAL INPUTS --- */
+input, textarea, select, button {
+  font-family: inherit;
+  font-size: 100%;
+}
+input[type="text"], input[type="password"], input[type="email"], textarea {
+  border-radius: 12px;
+  border: 1.5px solid var(--border-color, #e6e3ea);
+  padding: 12px 15px;
+  background: #f8fafb;
+  color: var(--text-color);
+  transition: border 0.16s;
+  margin-bottom: 2px;
+  outline: none;
+}
+input:focus, textarea:focus {
+  border-color: var(--accent);
+  background: #fff;
+  box-shadow: 0 0 0 2.5px #fbd46d30;
+}
+input::placeholder, textarea::placeholder {
+  color: #bbb;
+  opacity: 1;
+  font-size: 15px;
+}
+
+/* --- TASKS PAGE --- */
 .tasks-page-wrapper {
   min-height: 70vh;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 40px;
-  background: linear-gradient(120deg, #f8fafb 90%, #fbd46d18 100%);
+  padding-top: 54px;
+  background: linear-gradient(120deg, #f8fafb 90%, #fbd46d21 100%);
 }
+
 .tasks-card {
   background: #fff;
-  border-radius: 23px;
-  box-shadow: 0 4px 16px 0 rgba(80,70,60,0.13);
-  max-width: 430px;
+  border-radius: 29px;
+  box-shadow: 0 4px 16px 0 rgba(80,70,60,0.18);
+  max-width: 440px;
   width: 100%;
-  padding: 38px 26px 29px 26px;
+  padding: 42px 29px 34px 29px;
   margin: auto;
 }
+
 .tasks-title {
-  font-size: 2.0rem;
-  font-weight: 700;
-  letter-spacing: -1.2px;
+  font-size: 2rem;
+  font-weight: 800;
   margin-bottom: 0.4em;
+  color: var(--kavia-orange);
+  letter-spacing: -1.3px;
 }
 .tasks-desc {
-  margin-bottom: 1.2em;
-  font-size: 1.1rem;
+  margin-bottom: 1.18em;
+  font-size: 1.09rem;
+  color: var(--kavia-dark);
+  opacity: 0.72;
 }
+
 .task-form {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
 }
+
+.task-input {
+  border-radius: 13px;
+  border: 1.5px solid var(--border-color, #eee);
+  padding: 12px 16px;
+  background: #f8fafb;
+  font-size: 15.5px;
+  width: 70%;
+  max-width: 324px;
+}
+
 .tasks-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
+
+/* Bubble-like task items */
 .task-item {
-  /* Main li styles are handled in the JS inline styles for theming */
+  background: #f4f7fa;
+  margin: 9px 0;
+  border-radius: 15px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px 0 rgba(80,70,60,0.07);
+  gap: 11px;
+  font-size: 1.05em;
 }
-
-.task-input:focus {
-  border-color: var(--accent, #F76B8A);
-  box-shadow: 0 0 0 2px #fbd46d3b;
+.task-item input[type="checkbox"] {
+  width: 19px;
+  height: 19px;
+  margin-right: 10px;
+  accent-color: var(--primary);
+  border-radius: 5px;
 }
-.task-input::placeholder {
-  color: #bbb !important;
-  font-size: 15px;
-  opacity: 1;
-}
-
-/* General button styles */
-.btn {
-  cursor: pointer;
-  background: var(--kavia-orange);
+.task-item button.btn {
+  border-radius: 8px !important;
+  background: var(--accent);
   color: #fff;
-  border: none;
-  border-radius: 9px;
-  padding: 0.5em 1.5em;
-  font-weight: 600;
-  transition: background 0.15s;
-  text-align: center;
-}
-.btn:active,
-.btn:focus {
-  background: #d46c2d;
-  outline: none;
-}
-.btn[disabled], .btn[tabindex="-1"] {
-  background: #d2d2d2 !important;
-  color: #fff;
-  filter: grayscale(0.2);
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.title {
-  font-size: 2.1rem;
+  padding: 0.31em 1em;
   font-weight: 700;
-  color: var(--kavia-orange, #E87A41);
+  font-size: 16px;
+  margin-left: 6px;
+  box-shadow: none;
 }
 
-.subtitle {
-  font-size: 1.4rem;
-  color: var(--kavia-dark, #1A1A1A);
-  opacity: 0.68;
-  margin-bottom: 0.4em;
+.task-item span {
+  word-break: break-word;
 }
 
-.description {
-  color: var(--text-secondary);
-  margin-bottom: 1.4em;
-  font-size: 1.1rem;
-}
-
-input, textarea, select, button {
-  font-family: inherit;
-  font-size: 100%;
-}
-
-/* Utility classes */
-.shadow {
-  box-shadow: 0 1px 8px 0 rgba(80,70,60,0.08);
-}
-.rounded {
-  border-radius: 12px !important;
-}
-
-/* Responsive rules */
 @media (max-width: 680px) {
   .tasks-card {
     max-width: 98vw;
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   .container {
     max-width: 99vw;
   }
   .navbar .container {
     max-width: 100vw;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+}
+
+/* --- QUIZ BATTLE STYLES --- */
+.quiz-battle-wrapper {
+  min-height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 54px 0 14px 0;
+  background: linear-gradient(120deg,#f8fafb 90%, #F76B8A19 100%);
+}
+.quiz-card {
+  background: #fff;
+  border-radius: 27px;
+  max-width: 440px;
+  width: 100%;
+  padding: 38px 24px 29px 24px;
+  margin: auto;
+  box-shadow: 0 4px 16px 0 rgba(80,70,60,0.15);
+}
+.quiz-title {
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 2rem;
+  margin-bottom: 9px;
+  letter-spacing: -0.7px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.quiz-desc {
+  color: var(--accent);
+  margin-bottom: 17px;
+  font-size: 1.11em;
+  opacity: 0.84;
+}
+.score-box {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 9px;
+}
+
+/* --- FUN: Add emoji icons on quiz answers via JS if wanted --- */
+label[for*="q"]::before {
+  font-family: "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+}
+
+@media (max-width: 680px) {
+  .quiz-card {
+    max-width: 98vw;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .quiz-title { font-size: 1.3rem;}
+}
+
+/* --- STUDY CHAT STYLES --- */
+.chat-wrapper {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 35px 0 12px 0;
+  background: linear-gradient(108deg, #f8fafbaa 89%, #FBD46D23 100%);
+}
+.chat-card {
+  max-width: 460px;
+  width: 100%;
+  margin: auto;
+  background: #fff;
+  border-radius: 29px;
+  box-shadow: 0 4px 17px 0 rgba(80,70,60,0.17);
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  height: 67vh;
+  min-width: 0;
+  overflow: hidden;
+}
+@media (max-width: 540px) {
+  .chat-card {
+    max-width: 99vw !important;
+    min-width: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 9px 5px 15px;
+  background: #f8fafb;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.buddy-typing { font-family: monospace; font-size: 1.26em; opacity: 0.7; }
+
+input.chat-input {
+  border: 1.5px solid var(--accent, #F76B8A33);
+  border-radius: 13px;
+  padding: 10px 13px;
+  font-size: 1.09em;
+  background: #faf9fd;
+  color: #222;
+  box-shadow: none;
+}
+input.chat-input:focus {
+  border-color: var(--primary, #4F8A8B);
+  background: #fff;
+}
+/* chat send btn inherits .btn */
+
+/* --- DASHBOARD RESPONSIVE + EMOJI/PLAYFUL --- */
+.dashboard {
+  /* dashboard area styled inline for main layout, playful buttons done inline */
+}
+.dashboard-btn {
+  /* "Dashboard" navigation buttons styled via inline (for accent colors and emoji) */
+}
+
+/* --- UTILS/MISC --- */
+.shadow { box-shadow: 0 1px 8px 0 rgba(80,70,60,0.10);}
+.rounded { border-radius: 13px !important; }
+.hidden { display: none !important; }
+.centered { display: flex; align-items: center; justify-content: center; }
+
+::-webkit-scrollbar {
+  width: 7px;
+  background: #f9f9fa;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb {
+  background: #ecebed;
+  border-radius: 99px;
+}
+
+/* Responsive Body Padding for Navbar */
+@media (max-width: 520px) {
+  main {
+    padding-top: 62px !important;
+  }
+}
+
+/* --- UNIVERSAL RESPONSIVE FIXES --- */
+@media (max-width: 500px) {
+  .container {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+  body, html, #root, .app {
+    font-size: 97%;
+  }
+}
+
+/* Extra fun: slightly rotate emojis in headers for a playful effect (override with JS if animated) */
+h2 span[role="img"], .logo-symbol, .navbar span[role="img"] {
+  display: inline-block;
+  vertical-align: text-bottom;
+  transform: rotate(-8deg);
+  transition: transform 0.22s;
+}
+h2:hover span[role="img"], .logo-symbol:hover {
+  transform: rotate(7deg) scale(1.12);
+}
+
+/* Let ALL content adapt—general padding for mobile */
+@media (max-width: 350px) {
+  .container {
+    max-width: 100vw;
+    padding: 0 3vw;
   }
 }
