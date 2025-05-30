@@ -31,7 +31,10 @@ StudySphere is a collaborative study simulation web app, implemented as a multi-
 
 ### 5. Study Chat
 - Users must be able to send messages via a chat interface.
-- The chat should simulate real-time replies from a "Study Buddy" bot.
+- The chat provides real-time replies from a "Study Buddy" powered by OpenAI GPT-4.1.
+    - Each user message is sent to the OpenAI API; the Study Buddy responds in context.
+    - Loading indicators and error handling are included.
+    - API key is read securely from either a deployment environment variable or `.env` file (`REACT_APP_OPENAI_API_KEY`). **Never commit keys to source control.**
 - All message exchanges exist only in the frontend session.
 
 ---
