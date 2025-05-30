@@ -8,6 +8,7 @@ import SharedTasksPage from './pages/SharedTasksPage';
 import QuizBattlePage from './pages/QuizBattlePage';
 import StudyChatPage from './pages/StudyChatPage';
 import FocusModePage from './pages/FocusModePage';
+import ProgressPage from './pages/ProgressPage';
 import { UserProvider } from './UserContext';
 
 /**
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/tasks" element={<SharedTasksPage />} />
                 <Route path="/quiz" element={<QuizBattlePage />} />
                 <Route path="/chat" element={<StudyChatPage />} />
+                <Route path="/progress" element={<ProgressPage />} />
                 <Route path="*" element={<div>404 Page Not Found</div>} />
               </Routes>
             </div>
