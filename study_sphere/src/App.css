@@ -294,6 +294,25 @@ body, html, #root {
   letter-spacing: -0.02em;
 }
 
+/* Back to Dashboard button tweaks */
+.back-to-dashboard-btn {
+  background: var(--secondary, #FBD46D) !important;
+  color: #2b2b2b !important;
+  border-radius: 22px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 4px rgba(250,213,109,0.14);
+  letter-spacing: -0.01em;
+  margin-top: 5px;
+  margin-bottom: 9px;
+  transition: background 0.15s, color 0.13s, transform 0.11s;
+}
+.back-to-dashboard-btn:active,
+.back-to-dashboard-btn:focus {
+  background: #fceba8 !important;
+  color: #4F8A8B !important;
+  transform: scale(0.96);
+}
+
 .dashboard-btn {
   /* These are styled inline for now in DashboardPage.js */
 }
