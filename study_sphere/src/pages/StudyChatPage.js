@@ -3,37 +3,39 @@ import { useUser } from "../UserContext";
 import BackToDashboardButton from "./BackToDashboardButton";
 
 /**
- * StudyChatPage: Provides a playful, responsive chat between user and a simulated Study Buddy.
+ * StudyChatPage: Provides a playful, responsive chat between user and a *real-time* Study Buddy powered by OpenAI GPT-4.1.
  */
 
-// Simulated Buddy responses (cycled or randomized for demo)
-const BUDDY_REPLIES = [
-  "Haha, good one! 😄",
-  "I totally agree! 📚",
-  "Let's crush these tasks together! 💪",
-  "That's a great idea! 🤓",
-  "You're on fire today! 🔥",
-  "Lol! 😂 Wanna quiz later?",
-  "Staying productive is key! 🗝️",
-  "I found this topic tricky too! 🤔",
-  "Let's take a 5-min break? ☕",
-  "We make a great team! 👯‍♂️",
-];
-
-// Utility for picking a bot reply (for playful effect cycles/random)
-function pickBuddyReply(lastBuddyIdx = -1) {
-  // Cycle for demo so no immediate repeat
-  let idx = Math.floor(Math.random() * BUDDY_REPLIES.length);
-  if (idx === lastBuddyIdx)
-    idx = (idx + 1) % BUDDY_REPLIES.length;
-  return { reply: BUDDY_REPLIES[idx], idx };
+/**
+ * Helper to get the OpenAI API key:
+ * - Try window.OPENAI_API_KEY first (for secure deployment).
+ * - Fall back to process.env.REACT_APP_OPENAI_API_KEY for local dev.
+ *
+ * Ensure .env file uses: REACT_APP_OPENAI_API_KEY=your_key (and never commits to repo).
+ */
+function getOpenAIApiKey() {
+  // Try window-injected (secure, deployment scenarios)
+  if (typeof window !== "undefined" && window.OPENAI_API_KEY)
+    return window.OPENAI_API_KEY;
+  // Try from env (create-react-app will inline during build)
+  if (
+    typeof process !== "undefined" &&
+    process.env.REACT_APP_OPENAI_API_KEY
+  )
+    return process.env.REACT_APP_OPENAI_API_KEY;
+  return null;
 }
+
+// System prompt for Study Buddy persona
+const SYSTEM_PROMPT = `You are Study Buddy, an enthusiastic, supportive peer who helps students stay motivated. Respond to user messages with encouragement, useful study insights, and playful tone. Keep it positive and brief (1-3 sentences), sometimes use emojis. Never break character: act as a student study buddy, not an AI or assistant.`;
+
+const GPT_MODEL = "gpt-4-1106-preview"; // GPT-4.1
 
 // PUBLIC_INTERFACE
 function StudyChatPage() {
   /**
-   * Chat UI: Messages with user/buddy bubbles, playful colors, rounded styles.
-   * Auto-scrolls to bottom on new message. Bot replies after short delay.
+   * Chat UI: on every user message, forwards history to OpenAI and gets a real-time Study Buddy reply.
+   * Shows loading indicators, disables input while waiting, and handles errors gracefully.
    */
   const { username } = useUser();
   const [input, setInput] = useState("");
@@ -44,18 +46,72 @@ function StudyChatPage() {
     }
   ]);
   const [pendingBuddy, setPendingBuddy] = useState(false);
-  const [lastBuddyIdx, setLastBuddyIdx] = useState(-1);
+  const [error, setError] = useState("");
   const chatBottomRef = useRef(null);
 
-  // Scroll to bottom of chat on new messages
+  // Scroll to bottom on new message (including while loading)
   useEffect(() => {
     if (chatBottomRef.current) {
       chatBottomRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
-  }, [messages, pendingBuddy]);
+  }, [messages, pendingBuddy, error]);
 
-  // Handle sending user message
-  const handleSend = (e) => {
+  // Async function to call OpenAI completion
+  async function fetchBuddyReply(chatHistory) {
+    const apiKey = getOpenAIApiKey();
+    if (!apiKey) {
+      throw new Error(
+        "OpenAI API key not found. Please set REACT_APP_OPENAI_API_KEY in your .env file (see README for details)."
+      );
+    }
+
+    const contentMessages = [
+      {
+        role: "system",
+        content: SYSTEM_PROMPT,
+      },
+      ...chatHistory.map((m) => ({
+        role: m.author === "user" ? "user" : "assistant",
+        content: m.text,
+      })),
+    ];
+
+    const payload = {
+      model: GPT_MODEL,
+      messages: contentMessages,
+      max_tokens: 110,
+      temperature: 0.85,
+      stop: null,
+    };
+
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const more = await res.json().catch(() => ({}));
+      let msg = "OpenAI API error.";
+      if (more && more.error && more.error.message) {
+        msg = more.error.message;
+      }
+      throw new Error(msg);
+    }
+    const data = await res.json();
+    // Defensive: handle different OpenAI response shapes
+    const reply =
+      (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content)
+        ? data.choices[0].message.content.trim()
+        : "Sorry, I had trouble replying. Try again!";
+    return reply;
+  }
+
+  // Handle sending user message and getting GPT reply
+  const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || pendingBuddy) return;
     setMessages(prev => [
@@ -64,27 +120,41 @@ function StudyChatPage() {
     ]);
     setInput("");
     setPendingBuddy(true);
+    setError("");
 
-    // Simulate slight delay for buddy response
-    setTimeout(() => {
-      const { reply, idx } = pickBuddyReply(lastBuddyIdx);
+    // Get full latest chat for context (up to last 7 exchanges or fewer)
+    let fullHistory;
+    setMessages((prevMsgs) => {
+      fullHistory = [...prevMsgs, { author: "user", text: input.trim() }];
+      return fullHistory;
+    });
+
+    try {
+      // Wait a bit for realism even before fetch
+      await new Promise((res) => setTimeout(res, 300 + Math.random() * 250));
+      const reply = await fetchBuddyReply(fullHistory.slice(-7));
       setMessages((prev) => [
         ...prev,
         { author: "buddy", text: reply }
       ]);
-      setLastBuddyIdx(idx);
+    } catch (err) {
+      setError(typeof err === "string" ? err : err.message || "Unknown error");
+      setMessages((prev) => [
+        ...prev,
+        { author: "buddy", text: "Oops, I ran into an error and can't reply now. Please try again later!" }
+      ]);
+    } finally {
       setPendingBuddy(false);
-    }, 950 + Math.random() * 750);
+    }
   };
 
-  // Enter key sends message
+  // Enter key submits (unless pending)
   const handleKeyDown = e => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey && !pendingBuddy) {
       handleSend(e);
     }
   };
 
-  // Responsive & playful styles (rounded bubbles, accent color, emojis)
   return (
     <div
       className="chat-wrapper"
@@ -191,7 +261,7 @@ function StudyChatPage() {
               </div>
             </div>
           ))}
-          {/* Optional: Animated typing... */}
+          {/* Loading/typing animation, or error */}
           {pendingBuddy && (
             <div style={{display: "flex", flexDirection: "row", alignItems: "flex-end"}}>
               <div
@@ -214,6 +284,11 @@ function StudyChatPage() {
                   </span>
                 </span>
               </div>
+            </div>
+          )}
+          {error && (
+            <div style={{ color: "#F76B8A", background: "#fbd44d2f", borderRadius: 13, padding: "7px 13px", margin: "9px 0", fontSize: "1.02em" }}>
+              <span role="img" aria-label="Error" style={{marginRight: 7}}>⚠️</span>{error}
             </div>
           )}
           <div ref={chatBottomRef}></div>
@@ -295,6 +370,9 @@ function StudyChatPage() {
         }
         `}
       </style>
+      <div style={{ fontSize: "0.93em", color: "#bbb", marginTop: 10, textAlign: "center", maxWidth: 430 }}>
+        Powered by OpenAI GPT-4.1. For secure API management, set <code>REACT_APP_OPENAI_API_KEY</code> in a <code>.env</code> file for local dev. Never commit secrets to source control.
+      </div>
     </div>
   );
 }

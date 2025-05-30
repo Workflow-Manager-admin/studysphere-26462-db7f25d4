@@ -13,6 +13,23 @@ This project provides a minimal React template with a clean, modern UI and minim
 
 In the project directory, you can run:
 
+---
+
+### OpenAI API Key for Study Chat
+
+**To enable real Study Buddy replies:**
+
+1. [Sign up for an OpenAI API key](https://platform.openai.com/api-keys).
+2. Create a `.env` file in `study_sphere/` (NOT committed to git):
+   ```
+   REACT_APP_OPENAI_API_KEY=sk-your-openai-key-here
+   ```
+3. Restart your dev server.
+
+For secure deployment, inject the variable as an environment variable (never commit API keys). The frontend will use `process.env.REACT_APP_OPENAI_API_KEY` if running locally.
+
+---
+
 ### `npm start`
 
 Runs the app in development mode.\
