@@ -12,7 +12,7 @@ function DashboardPage() {
   const { username } = useUser();
   const navigate = useNavigate();
 
-  // Emojis: 📋 (tasks), 🤺 (quiz), 💬 (chat)
+  // Emojis: 📋 (tasks), 🤺 (quiz), 💬 (chat), 🎯 (focus)
   const features = [
     {
       label: "Shared Tasks",
@@ -31,6 +31,12 @@ function DashboardPage() {
       path: "/chat",
       emoji: "💬",
       accent: "#FBD46D" // Secondary
+    },
+    {
+      label: "Focus Mode",
+      path: "/focus",
+      emoji: "🎯",
+      accent: "#1ca8ff" // A bright blue
     }
   ];
 
