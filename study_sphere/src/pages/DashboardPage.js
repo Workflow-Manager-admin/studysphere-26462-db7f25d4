@@ -37,6 +37,12 @@ function DashboardPage() {
       path: "/focus",
       emoji: "🎯",
       accent: "#1ca8ff" // A bright blue
+    },
+    {
+      label: "Progress",
+      path: "/progress",
+      emoji: "🌟",
+      accent: "#6ab3fa" // soft blue
     }
   ];
 
